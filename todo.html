@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title>To Do</title>
+        <script src="https://kit.fontawesome.com/f0edfbf246.js"></script>
+        <style>
+            .checked{
+                background-color:bisque;
+                text-decoration: line-through;
+                font: 1.5em bold;
+                color: brown;
+            }
+
+            body{
+                background-color: antiquewhite;
+                font-family: 'Courier New', Courier, monospace;
+                padding: 20px;
+            }
+
+            h3{
+                font-size: 3em;
+                text-align: center;
+                color: chocolate;
+            }
+            
+            p{
+                text-align: center;
+                color: chocolate;
+            }
+
+            form{
+                padding: 20px;
+                text-align:center;
+            }
+
+            input{
+                border: 2px solid chocolate;
+                width: 50%;
+                height: 30px;
+                background-color: inherit;
+            }
+            input:focus{
+                border: none;
+            }
+
+            button{
+                width: 20%;
+                height: 30px;
+                border: 2px solid chocolate;
+                background-color: inherit;
+                color: brown;
+                font-weight: bold;
+            }
+
+            
+            li{
+                list-style-type: none;
+            }
+            li:hover{
+                background-color: bisque;
+                color: chocolate;
+                font-weight: bold;
+            }
+            
+        </style>
+    </head>
+    <body>
+        <h3>To Do List</h3>
+        <p>This awesome to do list uses your browser local storage, so we do not need any sql.</p>
+        <!--form to take user input-->
+        <form action="javascript:addToDo()" method="POST">
+            <input type="text" id="to-do-list-input" name="to-do-list-input" required>
+            <button type="submit" name="add-to-do" id="add-to-do">Add to the list</button>
+        </form>
+        <ul id="to-do-list"></ul>
+
+        <script>
+            let toDo = []; //initialise an array which will hold the value locally and also will hold previous values already in local storage
+            let toDoCompleted = []; //to hold completed todos
+            let toDolocal = window.localStorage.getItem("todo");
+            let toDolocalCompleted = window.localStorage.getItem("todoCompleted");
+            let ul = document.getElementById("to-do-list");
+
+            
+                
+            window.onload = function(){
+                if((toDolocal!=null)&&(toDolocalCompleted!=null)){
+                showToDo();
+                }else{
+                    window.localStorage.setItem("todo","toDo.toString()");
+                    window.localStorage.setItem("todoCompleted","toDoCompleted.toString()");
+                    location.reload();
+                }
+            }
+
+            function showToDo(){
+                toDolocal = toDolocal.split(",");
+                toDolocalCompleted = toDolocalCompleted.split(",");
+                for(let y in toDolocal){
+                    toDo.push(toDolocal[y]);
+                };
+
+                for (let y in toDolocalCompleted){
+                    toDoCompleted.push(toDolocalCompleted[y]);
+                }
+
+                for(var i=0; i<toDo.length; i++){
+                let toDoItems = document.createElement("li");
+                ul.appendChild(toDoItems);
+                toDoItems.innerHTML = "<input type='checkbox' id='markComplete"+i+"' onclick='markComplete("+i+")'>"+toDo[i];
+                toDoItems.innerHTML += "<i class='far fa-trash-alt' onclick='deletetodo("+i+")'></i>";
+                }
+
+                for(let a=0; a<toDoCompleted.length; a++){
+                    let showCompleted = document.getElementById("markComplete"+toDoCompleted[a]);
+                    showCompleted.setAttribute('checked', true);
+                    showCompleted.parentElement.setAttribute('class','checked');
+                    showCompleted.setAttribute("onclick","uncheck("+toDoCompleted[a]+")");
+                }
+            }
+            
+            
+            
+            let addToDo = function(){
+                let toDoListItems = document.getElementById("to-do-list-input").value;
+                toDo.push(toDoListItems);
+                //let toDoItems = document.createElement("li");
+                //ul.appendChild(toDoItems);
+                //toDoItems.innerHTML = "<input type='checkbox' id='markComplete' onclick='markComplete()'>"+toDoListItems;
+                window.localStorage.setItem('todo', toDo.toString());
+                location.reload();
+            };
+
+            let markComplete = function(i){
+                let checkbox = document.getElementById("markComplete"+i);
+                checkbox.parentElement.setAttribute('class','checked');
+                checkbox.addEventListener('click',checkbox.setAttribute("onclick","uncheck("+i+")"));
+                toDoCompleted.push(i);
+                window.localStorage.setItem('todoCompleted', toDoCompleted.toString());
+                //checkbox.addEventListener('click',checkbox.parentElement.setAttribute('class','unchecked'));
+            }
+
+            function uncheck(i){
+                let checkbox = document.getElementById("markComplete"+i);
+                checkbox.parentElement.setAttribute('class','unchecked');
+                checkbox.addEventListener('click',checkbox.setAttribute("onclick","markComplete("+i+")"));
+                for( var z = 0; z < toDoCompleted.length; z++){ 
+                    if ( toDoCompleted[z] === i) {
+                        toDoCompleted.splice(z, 1); 
+                    }
+                }
+                window.localStorage.setItem('todoCompleted', toDoCompleted.toString());
+            }
+
+            function deletetodo(i){
+                let deleteinput = document.getElementById("markComplete"+i);
+                deleteinput.parentElement.setAttribute("style","display: none;");
+                for( var z = 0; z < toDoCompleted.length; z++){ 
+                    if ( z === i) {
+                        toDoCompleted.splice(z, 1); 
+                    }
+                }
+                for( var z = 0; z < toDo.length; z++){ 
+                    if ( z === i) {
+                        toDo.splice(z, 1); 
+                    }
+                }
+                window.localStorage.setItem('todo', toDo.toString());
+                window.localStorage.setItem('todoCompleted', toDoCompleted.toString());
+            }
+        
+        </script>
+    </body>
+</html>
