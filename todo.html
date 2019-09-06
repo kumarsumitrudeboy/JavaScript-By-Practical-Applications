@@ -105,7 +105,8 @@
                 };
 
                 for (let y in toDolocalCompleted){
-                    if(isNaN(toDolocalCompleted[y])){
+                    let emptystrcheck = toDolocalCompleted[y];
+                    if(emptystrcheck.length === 0){
                         continue;
                     }else{
                     toDoCompleted.push(toDolocalCompleted[y]);
@@ -136,11 +137,8 @@
             let addToDo = function(){
                 let toDoListItems = document.getElementById("to-do-list-input").value;
                 toDo.push(toDoListItems);
-                //let toDoItems = document.createElement("li");
-                //ul.appendChild(toDoItems);
-                //toDoItems.innerHTML = "<input type='checkbox' id='markComplete' onclick='markComplete()'>"+toDoListItems;
                 window.localStorage.setItem('todo', toDo.toString());
-                showToDo(2);
+                location.reload();
             };
 
             let markComplete = function(i){
@@ -157,7 +155,7 @@
                 checkbox.parentElement.setAttribute('class','unchecked');
                 checkbox.addEventListener('click',checkbox.setAttribute("onclick","markComplete("+i+")"));
                 for( var z = 0; z < toDoCompleted.length; z++){ 
-                    if ( toDoCompleted[z] === i) {
+                    if ( toDoCompleted[z] == i) {
                         toDoCompleted.splice(z, 1); 
                     }
                 }
@@ -168,12 +166,12 @@
                 let deleteinput = document.getElementById("markComplete"+i);
                 deleteinput.parentElement.setAttribute("style","display: none;");
                 for( var z = 0; z < toDoCompleted.length; z++){ 
-                    if ( z === i) {
+                    if ( z == i) {
                         toDoCompleted.splice(z, 1); 
                     }
                 }
                 for( var z = 0; z < toDo.length; z++){ 
-                    if ( z === i) {
+                    if ( z == i) {
                         toDo.splice(z, 1); 
                     }
                 }
