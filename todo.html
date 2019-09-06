@@ -67,7 +67,6 @@
     <body>
         <h3>To Do List</h3>
         <p>This awesome to do list uses your browser local storage, so we do not need any sql.</p>
-        <!--form to take user input-->
         <form action="javascript:addToDo()" method="POST">
             <input type="text" id="to-do-list-input" name="to-do-list-input" required>
             <button type="submit" name="add-to-do" id="add-to-do">Add to the list</button>
@@ -75,8 +74,8 @@
         <ul id="to-do-list"></ul>
 
         <script>
-            let toDo = []; //initialise an array which will hold the value locally and also will hold previous values already in local storage
-            let toDoCompleted = []; //to hold completed todos
+            let toDo = [];
+            let toDoCompleted = [];
             let toDolocal = window.localStorage.getItem("todo");
             let toDolocalCompleted = window.localStorage.getItem("todoCompleted");
             let ul = document.getElementById("to-do-list");
@@ -85,7 +84,7 @@
                 
             window.onload = function(){
                 if((toDolocal!=null)&&(toDolocalCompleted!=null)){
-                showToDo();
+                showToDo(1);
                 }else{
                     window.localStorage.setItem("todo","toDo.toString()");
                     window.localStorage.setItem("todoCompleted","toDoCompleted.toString()");
@@ -93,9 +92,14 @@
                 }
             }
 
-            function showToDo(){
-                toDolocal = toDolocal.split(",");
-                toDolocalCompleted = toDolocalCompleted.split(",");
+            function showToDo(c){
+                if(c==1){
+                    toDolocal = toDolocal.split(",");
+                    toDolocalCompleted = toDolocalCompleted.split(",");
+                }else{
+                    ul.innerHTML = "";
+                }
+
                 for(let y in toDolocal){
                     toDo.push(toDolocal[y]);
                 };
@@ -112,10 +116,14 @@
                 }
 
                 for(let a=0; a<toDoCompleted.length; a++){
-                    let showCompleted = document.getElementById("markComplete"+toDoCompleted[a]);
-                    showCompleted.setAttribute('checked', true);
-                    showCompleted.parentElement.setAttribute('class','checked');
-                    showCompleted.setAttribute("onclick","uncheck("+toDoCompleted[a]+")");
+                    if(isNaN(toDoCompleted[a])){
+                        continue;
+                    }else{
+                        let showCompleted = document.getElementById("markComplete"+toDoCompleted[a]);
+                        showCompleted.setAttribute('checked', true);
+                        showCompleted.parentElement.setAttribute('class','checked');
+                        showCompleted.setAttribute("onclick","uncheck("+toDoCompleted[a]+")");
+                    }
                 }
             }
             
@@ -128,7 +136,7 @@
                 //ul.appendChild(toDoItems);
                 //toDoItems.innerHTML = "<input type='checkbox' id='markComplete' onclick='markComplete()'>"+toDoListItems;
                 window.localStorage.setItem('todo', toDo.toString());
-                location.reload();
+                showToDo(2);
             };
 
             let markComplete = function(i){
