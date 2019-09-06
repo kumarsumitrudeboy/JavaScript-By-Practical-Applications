@@ -105,7 +105,11 @@
                 };
 
                 for (let y in toDolocalCompleted){
+                    if(isNaN(toDolocalCompleted[y])){
+                        continue;
+                    }else{
                     toDoCompleted.push(toDolocalCompleted[y]);
+                    }
                 }
 
                 for(var i=0; i<toDo.length; i++){
